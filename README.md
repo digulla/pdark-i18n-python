@@ -53,3 +53,5 @@ Features:
 Requirements:
 
 * Python 3
+
+* See more packages listed in `requirements.txt`
