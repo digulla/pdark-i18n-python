@@ -16,7 +16,6 @@ import inspect
 import locale
 import logging
 import os
-import re
 import traceback
 
 __all__ = [
@@ -569,14 +568,41 @@ def text_message_formatter(text):
 class MessageParser(object):
     '''Parse a pattern into a MessageFormatter.
     
-    See test_formatting.py for examples.'''
+    See the method parse() for examples.'''
     
     def __init__(self, ts):
         self.ts = ts
         
-        self.start_pattern = re.compile(r'\{+')
-    
     def parse(self, message):
+        '''Parse a message.
+        
+        Valid messages are:
+        - strings
+        - lists
+        - tuples
+        
+        When the argument is a list or tuple, then those can contain
+        - strings
+        - dictionaries
+        
+        Strings will be passed verbatim to the output.
+        
+        Dictionaries describe which argument of the I18N method should be formatted
+        and written to the output.
+        
+        The name (string) or index (int) of the argument is passed as value of
+        the key "arg".
+        
+        All other key-value pairs in the dictionary are passed to the detail formatter
+        for this argument type.
+        
+        Examples:
+        
+        > 'text'
+        > ['text']
+        > ['Hello, ', {'arg': 'name'}]
+        > ['Today is ', {'arg': 'date', 'style': 'long'}]
+        '''
         if isinstance(message, str):
             return MessageFormatter([TextFragment(message)])
         
